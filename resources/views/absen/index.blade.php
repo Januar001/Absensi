@@ -115,16 +115,25 @@
               });
               const watermarkedDataUrl = canvas.toDataURL('image/png');
 
-              // Create a new file from the watermarked data URL
-              fetch(watermarkedDataUrl)
-                .then(res => res.blob())
-                .then(blob => {
+              // Compress the image to a maximum of 2MB
+              canvas.toBlob(function(blob) {
+                if (blob.size > 2 * 1024 * 1024) {
+                  const quality = 2 * 1024 * 1024 / blob.size;
+                  canvas.toBlob(function(compressedBlob) {
+                    const fileInput = document.getElementById('photo');
+                    const newFile = new File([compressedBlob], file.name, { type: 'image/png' });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(newFile);
+                    fileInput.files = dataTransfer.files;
+                  }, 'image/png', quality);
+                } else {
                   const fileInput = document.getElementById('photo');
                   const newFile = new File([blob], file.name, { type: 'image/png' });
                   const dataTransfer = new DataTransfer();
                   dataTransfer.items.add(newFile);
                   fileInput.files = dataTransfer.files;
-                });
+                }
+              }, 'image/png');
 
               // Display the original image preview without watermark
               const imagePreview = document.getElementById('imagePreview');
@@ -140,9 +149,17 @@
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
           document.getElementById('latlong').value = position.coords.latitude + ',' + position.coords.longitude;
+          document.getElementById('aoForm').style.pointerEvents = 'auto';
+          document.getElementById('submitBtn').disabled = false;
+        }, function(error) {
+          alert("Please enable GPS to use this form.");
+          document.getElementById('aoForm').style.pointerEvents = 'none';
+          document.getElementById('submitBtn').disabled = true;
         });
       } else {
         alert("Geolocation is not supported by this browser.");
+        document.getElementById('aoForm').style.pointerEvents = 'none';
+        document.getElementById('submitBtn').disabled = true;
       }
 
       @if(session('sweetalert'))
@@ -150,6 +167,15 @@
           title: 'Success!',
           text: '{{ session('success') }}',
           icon: 'success',
+          confirmButtonText: 'OK'
+        });
+      @endif
+
+      @if ($errors->any())
+        Swal.fire({
+          title: 'Error!',
+          html: '<ul>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+          icon: 'error',
           confirmButtonText: 'OK'
         });
       @endif

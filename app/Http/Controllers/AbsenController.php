@@ -20,7 +20,7 @@ class AbsenController extends Controller
             'nama' => 'required|string|max:255',
             'aktifitas' => 'required|string',
             'latlong' => 'required|string',
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
         $photoPath = $request->file('photo')->store('photos', 'public');
