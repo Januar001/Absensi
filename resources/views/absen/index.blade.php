@@ -98,7 +98,7 @@
                     // Konfigurasi opsi kompresi
                     const options = {
                         maxSizeMB: 1, // Maksimal ukuran file dalam MB
-                        maxWidthOrHeight: 700, // Maksimal lebar atau tinggi gambar
+                        maxWidthOrHeight: 850, // Maksimal lebar atau tinggi gambar
                         useWebWorker: true
                     };
 
