@@ -16,5 +16,6 @@ class Absensi extends Model
         'aktifitas',
         'latlong',
         'photo',
+        'ip',
     ];
 }

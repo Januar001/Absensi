@@ -71,9 +71,13 @@
                     <option value="Penagihan">Penagihan</option>
                 </select>
             </div>
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label for="latlong" class="form-label">LatLong</label>
                 <input type="text" class="form-control" id="latlong" name="latlong" readonly>
+            </div>
+            <div class="mb-3" hidden>
+                <label for="ip" class="form-label">IP Address</label>
+                <input type="text" class="form-control" id="ip" name="ip" readonly>
             </div>
             <div class="mb-3">
                 <label for="photo" class="form-label">Photo</label>
@@ -98,7 +102,7 @@
                     // Konfigurasi opsi kompresi
                     const options = {
                         maxSizeMB: 1, // Maksimal ukuran file dalam MB
-                        maxWidthOrHeight: 850, // Maksimal lebar atau tinggi gambar
+                        maxWidthOrHeight: 780, // Maksimal lebar atau tinggi gambar
                         useWebWorker: true
                     };
 
@@ -186,6 +190,16 @@
             document.getElementById('aoForm').style.pointerEvents = 'none';
             document.getElementById('submitBtn').disabled = true;
         }
+
+        // Get user's IP address and set it to the ip input field
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ip').value = data.ip;
+            })
+            .catch(error => {
+                console.error('Error fetching IP address:', error);
+            });
 
         @if (session('sweetalert'))
             Swal.fire({

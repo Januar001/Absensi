@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('aktifitas');
             $table->string('latlong');
             $table->string('photo');
+            $table->string('ip'); // Added field for IP address
             $table->timestamps();
         });
     }
