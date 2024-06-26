@@ -21,7 +21,7 @@ class AbsenController extends Controller
             'aktifitas' => 'required|string',
             'latlong' => 'required|string|regex:/^-?\d{1,2}\.\d+,-?\d{1,3}\.\d+$/',
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-            'keterangan' => 'string',
+            'keterangan' => 'string|nullable',
             'ip' => 'required|string|ip', // Added validation for IP address
         ]);
 
@@ -45,7 +45,7 @@ class AbsenController extends Controller
         }
 
         $date = now()->format('d/m/Y H:i:s');
-        $googleMapUrl = "https://www.google.com/maps/search/?api=1&query={$request->latlong}";
+        // $googleMapUrl = "https://www.google.com/maps/search/?api=1&query={$request->latlong}";
         $latlong = str_replace(' ', '', $request->latlong);
 
         // Calculate the number of reports for the current day with the same name
@@ -53,15 +53,26 @@ class AbsenController extends Controller
             ->whereDate('created_at', now()->format('Y-m-d'))
             ->count();
 
+        $data_latlong = Absensi::select('latlong')->where('nama', $request->nama)
+            ->whereDate('created_at', now()->format('Y-m-d'))
+            ->get()
+            ->pluck('latlong')
+            ->implode('/');
+        $urlmap = "https://www.google.com/maps/dir/-7.4250504,112.7226049/";
+
+
         $caption = "*LAPORAN BARU TELAH DITERIMA!* \n";
         $caption .= "({$date})\n\n";
+        $caption .= "*========================*\n\n";
         $caption .= "*Nama AO:* " . ucwords($request->nama) . "\n";
         $caption .= "*Jenis Laporan:* {$request->aktifitas}\n";
         $caption .= "*Keterangan:* {$request->keterangan}\n";
-        $caption .= "*Lokasi:* [$alamat](https://maps.google.com?q=" . urlencode($latlong) . ")\n";
-        $caption .= "*===================*\n\n";
-        $caption .= "*Jumlah laporan hari ini:* {$jumlah_laporan_hari_ini} Lap\n";
+        $caption .= "*Lokasi:* [$alamat](https://maps.google.com?q=" . urlencode($latlong) . ")\n\n";
+        $caption .= "*========================*\n\n";
+        $caption .= "*Jumlah laporan hari ini:* {$jumlah_laporan_hari_ini} Laporan\n";
+        $caption .= "*Rute Perjalanan:* [Lihat Rute 🚀](" . $urlmap . $data_latlong . ")\n";
         $caption .= "*IP Address:* {$request->ip}\n";
+
 
         $telegramResponse = $this->sendTelegramPhotoNotification($photoPath, $caption);
         if (!$telegramResponse) {
