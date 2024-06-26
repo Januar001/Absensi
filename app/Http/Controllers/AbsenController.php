@@ -21,6 +21,7 @@ class AbsenController extends Controller
             'aktifitas' => 'required|string',
             'latlong' => 'required|string|regex:/^-?\d{1,2}\.\d+,-?\d{1,3}\.\d+$/',
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            'keterangan' => 'string',
             'ip' => 'required|string|ip', // Added validation for IP address
         ]);
 
@@ -34,6 +35,7 @@ class AbsenController extends Controller
             'aktifitas' => $request->aktifitas,
             'latlong' => $request->latlong,
             'photo' => $photoPath,
+            'keterangan' => $request->keterangan,
             'ip' => $request->ip, // Added IP address to be stored
         ]);
 
@@ -53,8 +55,9 @@ class AbsenController extends Controller
 
         $caption = "*LAPORAN BARU TELAH DITERIMA!* \n";
         $caption .= "({$date})\n\n";
-        $caption .= "*Nama AO:* {$request->nama}\n";
+        $caption .= "*Nama AO:* " . ucwords($request->nama) . "\n";
         $caption .= "*Jenis Laporan:* {$request->aktifitas}\n";
+        $caption .= "*Keterangan:* {$request->keterangan}\n";
         $caption .= "*Lokasi:* [$alamat](https://maps.google.com?q=" . urlencode($latlong) . ")\n";
         $caption .= "*===================*\n\n";
         $caption .= "*Jumlah laporan hari ini:* {$jumlah_laporan_hari_ini} Lap\n";

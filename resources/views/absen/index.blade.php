@@ -71,6 +71,10 @@
                     <option value="Penagihan">Penagihan</option>
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="keterangan" class="form-label">Keterangan</label>
+                <textarea class="form-control" id="keterangan" name="keterangan" rows="3"></textarea>
+            </div>
             <div class="mb-3" hidden>
                 <label for="latlong" class="form-label">LatLong</label>
                 <input type="text" class="form-control" id="latlong" name="latlong" readonly>
