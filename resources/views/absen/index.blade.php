@@ -128,7 +128,7 @@
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@latest/dist/browser-image-compression.min.js">
     </script>
     <script>
-        Periksa apakah pengguna menggunakan perangkat seluler dan browser Chrome
+        // Periksa apakah pengguna menggunakan perangkat seluler dan browser Chrome
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         const isChrome = /Chrome/i.test(navigator.userAgent);
 
@@ -137,7 +137,7 @@
             document.body.innerHTML = "";
             throw new Error("Access denied: Not a mobile Chrome browser.");
         }
-        Akhir periksa
+        //Akhir periksa
 
         document.getElementById('photo').addEventListener('change', async function(event) {
             const [file] = event.target.files;
@@ -268,21 +268,11 @@
 
         // Disable submit button after form submission and show loading spinner
         document.getElementById('aoForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            Swal.fire({
-                title: 'Processing...',
-                text: 'Please wait while we process your submission.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            // Simulate form submission delay
-            setTimeout(() => {
-                event.target.submit(); // Submit the form after the delay
-            }, 2000);
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Processing...';
+            loadingSpinner.style.display = 'inline-block';
         });
     </script>
 </body>
