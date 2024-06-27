@@ -50,12 +50,38 @@
             height: auto;
             display: none;
         }
+
+        .loading-spinner {
+            display: none;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 0.2em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border 0.75s linear infinite;
+        }
+
+        @keyframes spinner-border {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn-loading {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-loading .loading-spinner {
+            margin-left: 10px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <h1>Form Laporan Account Officer</h1>
+        {{-- <p>Nama Device: <span id="deviceName"></span></p> --}}
         <form id="aoForm" method="POST" action="" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
@@ -91,7 +117,10 @@
                     <img id="imagePreview" src="#" alt="Image Preview">
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
+            <button type="submit" class="btn btn-primary btn-loading" id="submitBtn">
+                Kirim Laporan
+                <span class="loading-spinner" id="loadingSpinner"></span>
+            </button>
         </form>
     </div>
 
@@ -99,6 +128,17 @@
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@latest/dist/browser-image-compression.min.js">
     </script>
     <script>
+        // Periksa apakah pengguna menggunakan perangkat seluler dan browser Chrome
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isChrome = /Chrome/i.test(navigator.userAgent);
+
+        if (!isMobile || !isChrome) {
+            alert("Silakan akses halaman ini menggunakan browser Chrome pada smartphone.");
+            document.body.innerHTML = "";
+            throw new Error("Access denied: Not a mobile Chrome browser.");
+        }
+        //Akhir periksa
+
         document.getElementById('photo').addEventListener('change', async function(event) {
             const [file] = event.target.files;
             if (file) {
@@ -205,6 +245,9 @@
                 console.error('Error fetching IP address:', error);
             });
 
+        // Get device name and display it
+        // document.getElementById('deviceName').innerText = navigator.userAgent;
+
         @if (session('sweetalert'))
             Swal.fire({
                 title: 'Success!',
@@ -222,6 +265,15 @@
                 confirmButtonText: 'OK'
             });
         @endif
+
+        // Disable submit button after form submission and show loading spinner
+        document.getElementById('aoForm').addEventListener('submit', function(event) {
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Processing...';
+            loadingSpinner.style.display = 'inline-block';
+        });
     </script>
 </body>
 
