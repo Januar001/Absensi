@@ -61,7 +61,9 @@ class AbsenController extends Controller
             ->get()
             ->pluck('latlong')
             ->implode('/');
-        $urlmap = "https://www.google.com/maps/dir/-7.4250504,112.7226049/";
+
+        $mulai = "BPR+Buduran+Deltapurnama,+Jalan+Garuda+No.06,+Buduran,+Kec.+Buduran,+Kabupaten+Sidoarjo,+Jawa+Timur+61252";
+        $urlmap = "https://www.google.com/maps/dir/" . $mulai . "/";
 
 
         $caption = "*LAPORAN BARU TELAH DITERIMA!* \n";
