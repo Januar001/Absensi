@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Absensi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
@@ -77,10 +78,25 @@ class AbsenController extends Controller
         $caption .= "*Provider:* {$provider}\n";
 
 
+
+
         $telegramResponse = $this->sendTelegramPhotoNotification($photoPath, $caption);
         if (!$telegramResponse) {
             return redirect()->back()->withErrors(['telegram' => 'Failed to send Telegram notification.']);
         }
+
+        $reportCounts = Absensi::select('nama', DB::raw('count(*) as total'))
+            ->whereDate('created_at', now()->format('Y-m-d'))
+            ->groupBy('nama')
+            ->get();
+
+        $message = "*UPDATE DATA TERBARU*\n" . "(" . now()->translatedFormat('l, d F Y H:i:s') . ")\n\n";
+
+        foreach ($reportCounts as $report) {
+            $message .= "✅ *" . ucwords("{$report->nama}") . "* : {$report->total} Laporan\n";
+        }
+
+        $telegramMessage = $this->sendTelegramMessage($message);
 
         return redirect('/')->with('success', 'Form submitted successfully!')->with('sweetalert', true);
     }
@@ -93,7 +109,7 @@ class AbsenController extends Controller
         try {
             $response = $client->request('GET', $url, [
                 'headers' => [
-                    'User-Agent' => 'YourAppName/1.0'
+                    'User-Agent' => env('APP_NAME') . '/1.0'
                 ]
             ]);
             $data = json_decode($response->getBody(), true);
@@ -115,7 +131,7 @@ class AbsenController extends Controller
         try {
             $response = $client->request('GET', $url, [
                 'headers' => [
-                    'User-Agent' => 'YourAppName/1.0'
+                    'User-Agent' => env('APP_NAME') . '/1.0'
                 ]
             ]);
             $provider = $response->getBody()->getContents();
@@ -126,6 +142,8 @@ class AbsenController extends Controller
 
         return $provider;
     }
+
+
 
     private function sendTelegramPhotoNotification($photoPath, $caption)
     {
@@ -158,6 +176,31 @@ class AbsenController extends Controller
             return $response->getStatusCode() == 200;
         } catch (\Exception $e) {
             Log::error("Failed to send Telegram photo notification: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
+
+
+    private function sendTelegramMessage($message)
+    {
+        $botToken = env('TELEGRAM_BOT_TOKEN');
+        $chatId = env('TELEGRAM_CHAT_ID');
+        $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
+
+        try {
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('POST', $url, [
+                'form_params' => [
+                    'chat_id' => $chatId,
+                    'text' => $message,
+                    'parse_mode' => 'Markdown'
+                ]
+            ]);
+            return $response->getStatusCode() == 200;
+        } catch (\Exception $e) {
+            Log::error("Failed to send Telegram message: " . $e->getMessage());
             return false;
         }
     }
