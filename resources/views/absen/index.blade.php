@@ -129,14 +129,14 @@
     </script>
     <script>
         // Periksa apakah pengguna menggunakan perangkat seluler dan browser Chrome
-        // const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        // const isChrome = /Chrome/i.test(navigator.userAgent);
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isChrome = /Chrome/i.test(navigator.userAgent);
 
-        // if (!isMobile || !isChrome) {
-        //     alert("Silakan akses halaman ini menggunakan browser Chrome pada smartphone.");
-        //     document.body.innerHTML = "";
-        //     throw new Error("Access denied: Not a mobile Chrome browser.");
-        // }
+        if (!isMobile || !isChrome) {
+            alert("Silakan akses halaman ini menggunakan browser Chrome pada smartphone.");
+            document.body.innerHTML = "";
+            throw new Error("Access denied: Not a mobile Chrome browser.");
+        }
         //Akhir periksa
 
         document.getElementById('photo').addEventListener('change', async function(event) {
