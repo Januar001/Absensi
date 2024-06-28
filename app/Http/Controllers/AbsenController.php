@@ -39,6 +39,8 @@ class AbsenController extends Controller
             'ip' => $request->ip, // Added IP address to be stored
         ]);
 
+        $provider = $this->getProviderFromIP($request->ip);
+
         $alamat = $this->getAddressFromLatLong($request->latlong);
         if ($alamat === 'Address not found') {
             return redirect()->back()->withErrors(['latlong' => 'Failed to retrieve address from latlong.']);
@@ -72,6 +74,7 @@ class AbsenController extends Controller
         $caption .= "*Jumlah laporan hari ini:* {$jumlah_laporan_hari_ini} Laporan\n";
         $caption .= "*Rute Perjalanan:* [Lihat Rute 🚀](" . $urlmap . $data_latlong . ")\n";
         $caption .= "*IP Address:* {$request->ip}\n";
+        $caption .= "*Provider:* {$provider}\n";
 
 
         $telegramResponse = $this->sendTelegramPhotoNotification($photoPath, $caption);
@@ -101,6 +104,27 @@ class AbsenController extends Controller
         }
 
         return $address;
+    }
+
+
+    private function getProviderFromIP($ip)
+    {
+        $url = "https://ipapi.co/{$ip}/org/";
+
+        $client = new \GuzzleHttp\Client();
+        try {
+            $response = $client->request('GET', $url, [
+                'headers' => [
+                    'User-Agent' => 'YourAppName/1.0'
+                ]
+            ]);
+            $provider = $response->getBody()->getContents();
+        } catch (\Exception $e) {
+            Log::error("Failed to retrieve provider: " . $e->getMessage());
+            $provider = 'Provider not found';
+        }
+
+        return $provider;
     }
 
     private function sendTelegramPhotoNotification($photoPath, $caption)
