@@ -90,7 +90,7 @@ class AbsenController extends Controller
             ->groupBy('nama')
             ->get();
 
-        $message = "*UPDATE DATA TERBARU*\n" . "(" . now()->translatedFormat('l, d F Y H:i:s') . ")\n\n";
+        $message = "*UPDATE DATA LAPORAN TERBARU*\n" . "(" . now()->translatedFormat('l, d F Y H:i:s') . ")\n\n";
 
         foreach ($reportCounts as $report) {
             $message .= "✅ *" . ucwords("{$report->nama}") . "* : {$report->total} Laporan\n";
