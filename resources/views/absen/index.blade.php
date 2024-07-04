@@ -90,16 +90,43 @@
                     value="{{ request()->get('ao') }}" readonly>
             </div>
             <div class="mb-3">
-                <label for="aktifitas" class="form-label">Aktifitas</label>
+                <label for="aktifitas" class="form-label">Jenis Laporan</label>
                 <select class="form-select" id="aktifitas" name="aktifitas">
                     <option value="Marketing">Marketing</option>
                     <option value="Kunjungan">Kunjungan</option>
                     <option value="Penagihan">Penagihan</option>
                 </select>
             </div>
+            <div class="mb-3" id="kunjunganFields" style="display: none;">
+                <div class="mb-3">
+                    <label for="jenis_kunjungan" class="form-label">Jenis Kunjungan</label>
+                    <select class="form-select" id="jenis_kunjungan" name="jenis_kunjungan" required>
+                        <option value="Survei">Survei</option>
+                        <option value="Survei Ulang">Survei Ulang</option>
+                        <option value="Pasca Pencairan">Pasca Pencairan</option>
+                    </select>
+                </div>
+                <label for="nama_nasabah_k" class="form-label">Nama Debitur</label>
+                <input type="text" class="form-control mb-3" id="nama_nasabah_k" name="nama_nasabah_k">
+            </div>
+            <div id="penagihanFields" class="mb-3" style="display: none;">
+                <label for="nama_nasabah" class="form-label">Nama Debitur</label>
+                <input type="text" class="form-control mb-3" id="nama_nasabah" name="nama_nasabah">
+                <div class="mb-3">
+                    <label for="kol" class="form-label">Kolektibilitas</label>
+                    <select class="form-select" id="kol" name="kol" required>
+                        <option value="Kol 1 - Lancar">Kol 1 - Lancar</option>
+                        <option value="Kol 2 - Dalam Perhatian Khusus">Kol 2 - Dalam Perhatian Khusus</option>
+                        <option value="Kol 3 - Kurang Lancar">Kol 3 - Kurang Lancar</option>
+                        <option value="Kol 4 - Diragukan">Kol 4 - Diragukan</option>
+                        <option value="Kol 5 - Macet">Kol 5 - Macet</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="mb-3">
                 <label for="keterangan" class="form-label">Keterangan</label>
-                <textarea class="form-control" id="keterangan" name="keterangan" rows="3"></textarea>
+                <textarea class="form-control" id="keterangan" name="keterangan" rows="3" required></textarea>
             </div>
             <div class="mb-3" hidden>
                 <label for="latlong" class="form-label">LatLong</label>
@@ -112,7 +139,7 @@
             <div class="mb-3">
                 <label for="photo" class="form-label">Photo</label>
                 <input type="file" class="form-control" id="photo" name="photo" accept="image/*"
-                    capture="camera">
+                    capture="camera" required>
                 <div id="imagePreviewContainer">
                     <img id="imagePreview" src="#" alt="Image Preview">
                 </div>
@@ -129,14 +156,14 @@
     </script>
     <script>
         // Periksa apakah pengguna menggunakan perangkat seluler dan browser Chrome
-        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        const isChrome = /Chrome/i.test(navigator.userAgent);
+        // const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        // const isChrome = /Chrome/i.test(navigator.userAgent);
 
-        if (!isMobile || !isChrome) {
-            alert("Silakan akses halaman ini menggunakan browser Chrome pada smartphone.");
-            document.body.innerHTML = "";
-            throw new Error("Access denied: Not a mobile Chrome browser.");
-        }
+        // if (!isMobile || !isChrome) {
+        //     alert("Silakan akses halaman ini menggunakan browser Chrome pada smartphone.");
+        //     document.body.innerHTML = "";
+        //     throw new Error("Access denied: Not a mobile Chrome browser.");
+        // }
         //Akhir periksa
 
         document.getElementById('photo').addEventListener('change', async function(event) {
@@ -246,6 +273,35 @@
             });
 
         // Get device name and display it
+
+
+        // Menampilkan Kunjungan
+        const aktifitasSelect = document.getElementById('aktifitas');
+        const penagihanFields = document.getElementById('penagihanFields');
+
+        aktifitasSelect.addEventListener('change', function() {
+            if (aktifitasSelect.value === 'Penagihan') {
+                penagihanFields.style.display = 'block';
+                document.getElementById('nama_nasabah').setAttribute('required', 'required');
+                document.getElementById('kol').setAttribute('required', 'required');
+            } else {
+                penagihanFields.style.display = 'none';
+                document.getElementById('nama_nasabah').removeAttribute('required');
+                document.getElementById('kol').removeAttribute('required');
+            }
+
+            if (aktifitasSelect.value === 'Kunjungan') {
+                kunjunganFields.style.display = 'block';
+                document.getElementById('jenis_kunjungan').setAttribute('required', 'required');
+                document.getElementById('nama_nasabah_k').setAttribute('required', 'required');
+            } else {
+                kunjunganFields.style.display = 'none';
+                document.getElementById('jenis_kunjungan').removeAttribute('required');
+                document.getElementById('nama_nasabah_k').removeAttribute('required');
+            }
+        });
+
+
         // document.getElementById('deviceName').innerText = navigator.userAgent;
 
         @if (session('sweetalert'))

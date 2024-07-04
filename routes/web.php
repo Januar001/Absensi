@@ -20,3 +20,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\AbsenController::class, 'index']);
 
 Route::post('/', [App\Http\Controllers\AbsenController::class, 'store']);
+
+// Route::get('/todolist', [App\Http\Controllers\TodolistController::class, 'index']);
+Route::get('/todolist', App\Livewire\Todolist::class);
+
+// Route::post('/todolist', [App\Http\Controllers\TodolistController::class, 'send']);

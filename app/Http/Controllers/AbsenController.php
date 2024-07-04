@@ -71,6 +71,15 @@ class AbsenController extends Controller
         $caption .= "*========================*\n\n";
         $caption .= "*Nama AO:* " . ucwords($request->nama) . "\n";
         $caption .= "*Jenis Laporan:* {$request->aktifitas}\n";
+        if ($request->aktifitas == "Penagihan") {
+            $caption .= "*Nama Debitur: * {$request->nama_nasabah}\n";
+            $caption .= "*Kolektibilitas: * {$request->kol}\n";
+        }
+        if ($request->aktifitas == "Kunjungan") {
+            $caption .= "*Jenis Kunjungan: * Kunjungan {$request->jenis_kunjungan}\n";
+            $caption .= "*Nama Debitur: * {$request->nama_nasabah_k}\n";
+        }
+
         $caption .= "*Keterangan:* {$request->keterangan}\n";
         $caption .= "*Lokasi:* [$alamat](https://maps.google.com?q=" . urlencode($latlong) . ")\n\n";
         $caption .= "*========================*\n\n";
