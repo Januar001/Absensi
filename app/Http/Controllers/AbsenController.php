@@ -22,8 +22,28 @@ class AbsenController extends Controller
             'aktifitas' => 'required|string',
             'latlong' => 'required|string|regex:/^-?\d{1,2}\.\d+,-?\d{1,3}\.\d+$/',
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-            'keterangan' => 'string|nullable',
-            'ip' => 'required|string|ip', // Added validation for IP address
+            'keterangan' => 'nullable|string',
+            'ip' => 'required|string|ip',
+        ], [
+            // Custom error messages
+            'nama.required' => 'Nama wajib diisi. Pastikan link anda sudah benar',
+            'nama.string' => 'Nama harus berupa teks.',
+            'nama.max' => 'Nama tidak boleh lebih dari 255 karakter.',
+            
+            'aktifitas.required' => 'Aktifitas wajib diisi.',
+            'aktifitas.string' => 'Aktifitas harus berupa teks.',
+    
+            'latlong.required' => 'Lokasi (Latitude, Longitude) wajib diisi.',
+            'latlong.regex' => 'Lokasi harus berupa format yang benar, contoh: -6.200000,106.816666.',
+    
+            'photo.required' => 'Foto wajib diunggah.',
+            'photo.image' => 'File yang diunggah harus berupa gambar.',
+            'photo.mimes' => 'Format gambar yang diperbolehkan: jpeg, png, jpg, gif, svg.',
+    
+            'keterangan.string' => 'Keterangan harus berupa teks.',
+    
+            'ip.required' => 'IP Address wajib diisi.',
+            'ip.ip' => 'Masukkan IP Address yang valid.',
         ]);
 
         $photoPath = $request->file('photo')->store('photos', 'public');
@@ -109,7 +129,7 @@ class AbsenController extends Controller
 
         $telegramMessage = $this->sendTelegramMessage($message);
 
-        return redirect('/')->with('success', 'Form submitted successfully!')->with('sweetalert', true);
+        return back()->with('success', 'Form submitted successfully!')->with('sweetalert', true);
     }
 
     private function getAddressFromLatLong($latLong)

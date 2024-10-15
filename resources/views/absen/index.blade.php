@@ -155,15 +155,25 @@
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@latest/dist/browser-image-compression.min.js">
     </script>
     <script>
-        // Periksa apakah pengguna menggunakan perangkat seluler dan browser Chrome
-        // const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        // const isChrome = /Chrome/i.test(navigator.userAgent);
+        //periksa link ao
+        const urlParams = new URLSearchParams(window.location.search);
+        const aoParam = urlParams.get('AO') or urlParams.get('ao');
 
-        // if (!isMobile || !isChrome) {
-        //     alert("Silakan akses halaman ini menggunakan browser Chrome pada smartphone.");
-        //     document.body.innerHTML = "";
-        //     throw new Error("Access denied: Not a mobile Chrome browser.");
-        // }
+        if (!aoParam) {
+        alert("Sepurane! Sampean kliru ngelebokno alamat website, Cobak sampean cek maneh");
+        document.body.innerHTML = ""; // Kosongkan isi halaman
+        throw new Error("Access denied: Link yang anda masukkan salah");
+         }
+
+        // Periksa apakah pengguna menggunakan perangkat seluler dan browser Chrome
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isChrome = /Chrome/i.test(navigator.userAgent);
+
+        if (!isMobile || !isChrome) {
+            alert("Silakan akses halaman ini menggunakan browser Chrome pada smartphone.");
+            document.body.innerHTML = "";
+            throw new Error("Access denied: Not a mobile Chrome browser.");
+        }
         //Akhir periksa
 
         document.getElementById('photo').addEventListener('change', async function(event) {
@@ -252,12 +262,12 @@
                 document.getElementById('aoForm').style.pointerEvents = 'auto';
                 document.getElementById('submitBtn').disabled = false;
             }, function(error) {
-                alert("Please enable GPS to use this form.");
+                alert("Harap aktifkan GPS untuk menggunakan formulir ini.");
                 document.getElementById('aoForm').style.pointerEvents = 'none';
                 document.getElementById('submitBtn').disabled = true;
             });
         } else {
-            alert("Geolocation is not supported by this browser.");
+            alert("Geolokasi tidak didukung oleh browser ini.");
             document.getElementById('aoForm').style.pointerEvents = 'none';
             document.getElementById('submitBtn').disabled = true;
         }
