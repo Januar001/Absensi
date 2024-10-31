@@ -26,11 +26,7 @@ class AbsenController extends Controller
             'ip' => 'required|string|ip',
         ], [
             // Custom error messages
-<<<<<<< HEAD
             'nama.required' => 'Nama wajib diisi. Pastikan link anda sudah benar',
-=======
-            'nama.required' => 'Nama wajib diisi.',
->>>>>>> 5d006208f5f5cc874c28854380b1703eb4aac967
             'nama.string' => 'Nama harus berupa teks.',
             'nama.max' => 'Nama tidak boleh lebih dari 255 karakter.',
             
