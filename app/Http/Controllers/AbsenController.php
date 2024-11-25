@@ -67,6 +67,11 @@ class AbsenController extends Controller
             return redirect()->back()->withErrors(['latlong' => 'Failed to retrieve address from latlong.']);
         }
 
+        $tgl=now();
+        $namaHari = $tgl->locale('id')->dayName; // Nama hari dalam bahasa Indonesia
+        $formattedDate = $tgl->format('dmY'); // Format tanggal menjadi DDMMYYYY
+        $datehtg = ucfirst($namaHari) . $formattedDate;
+        
         $date = now()->format('d/m/Y H:i:s');
         // $googleMapUrl = "https://www.google.com/maps/search/?api=1&query={$request->latlong}";
         $latlong = str_replace(' ', '', $request->latlong);
@@ -106,7 +111,9 @@ class AbsenController extends Controller
         $caption .= "*Jumlah laporan hari ini:* {$jumlah_laporan_hari_ini} Laporan\n";
         $caption .= "*Rute Perjalanan:* [Lihat Rute 🚀](" . $urlmap . $data_latlong . ")\n";
         $caption .= "*IP Address:* {$request->ip}\n";
-        $caption .= "*Provider:* {$provider}\n";
+        $caption .= "*Provider:* {$provider}\n\n";
+        $caption .= "*========================*\n\n";
+        $caption .= "#{$datehtg}"." #".ucwords($request->nama)." #{$request->nama_nasabah}"." #{$request->jenis_kunjungan}"." #{$request->nama_nasabah}"." #".ucwords($request->nama)."{$datehtg}";
 
 
 
