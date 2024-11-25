@@ -113,7 +113,7 @@ class AbsenController extends Controller
         $caption .= "*IP Address:* {$request->ip}\n";
         $caption .= "*Provider:* {$provider}\n\n";
         $caption .= "*========================*\n\n";
-        $caption .= "#{$datehtg}"." #".ucwords($request->nama)." #{$request->nama_nasabah}"." #{$request->jenis_kunjungan}"." #{$request->nama_nasabah}"." #".ucwords($request->nama)."{$datehtg}";
+        $caption .= "#{$datehtg}"." #".ucwords($request->nama)." #{$request->nama_nasabah}"." #{$request->jenis_kunjungan}"." #".ucwords($request->nama)."{$datehtg}";
 
 
 
