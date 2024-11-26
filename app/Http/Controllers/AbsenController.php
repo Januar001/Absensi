@@ -14,7 +14,7 @@ class AbsenController extends Controller
     {
         return view('absen.index');
     }
-
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -69,8 +69,10 @@ class AbsenController extends Controller
 
         $tgl=now();
         $namaHari = $tgl->locale('id')->dayName; // Nama hari dalam bahasa Indonesia
+        $namaBulan =$tgl->locale('id')->monthName; // Nama bulan dalam bahasa Indonesia
         $formattedDate = $tgl->format('dmY'); // Format tanggal menjadi DDMMYYYY
         $datehtg = ucfirst($namaHari) . $formattedDate;
+        $blnhtg = ucfirst($namaBulan) . $tgl->format('Y');
         
         $date = now()->format('d/m/Y H:i:s');
         // $googleMapUrl = "https://www.google.com/maps/search/?api=1&query={$request->latlong}";
@@ -113,7 +115,12 @@ class AbsenController extends Controller
         $caption .= "*IP Address:* {$request->ip}\n";
         $caption .= "*Provider:* {$provider}\n\n";
         $caption .= "*========================*\n\n";
-        $caption .= "#{$datehtg}"." #".ucwords($request->nama)." #{$request->nama_nasabah}"." #{$request->jenis_kunjungan}"." #".ucwords($request->nama)."{$datehtg}";
+        $caption .= "#{$datehtg} " 
+                    . "#" . ucwords($request->nama) . " " 
+                    . "#{$request->nama_nasabah} " 
+                    . "#{$request->jenis_kunjungan} " 
+                    . "#" . ucwords($request->nama) . "{$datehtg} " 
+                    . "#" . ucwords($request->nama) . "{$blnhtg}";
 
 
 
